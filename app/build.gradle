@@ -1,0 +1,89 @@
+apply plugin: 'com.android.application'
+apply plugin: 'idea'
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion "29.0.0"
+    defaultConfig {
+        applicationId "com.example.myapplication"
+        minSdkVersion 15
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        flavorDimensions "default"
+    }
+
+    dexOptions {
+        // incremental true
+        javaMaxHeapSize "4g"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            zipAlignEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "DEFAULT_BOOTSTRAP_ADDRESS", "\"bootstrap.example.com\""
+            buildConfigField "String", "H2H_VERSION", "\"1.2.2\""
+            buildConfigField "int", "DEFAULT_BOOTSTRAP_PORT", "4622"
+            buildConfigField "int", "PEER_MAP_UPDATE_INTERVAL", "120"
+        }
+        debug {
+            // minifyEnabled true
+            // proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "DEFAULT_BOOTSTRAP_ADDRESS", "\"192.168.1.30\""
+            buildConfigField "String", "H2H_VERSION", "\"1.2.2\""
+            buildConfigField "int", "DEFAULT_BOOTSTRAP_PORT", "4622"
+            buildConfigField "int", "PEER_MAP_UPDATE_INTERVAL", "120"
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/io.netty.versions.properties'
+        exclude 'META-INF/INDEX.LIST'
+        exclude 'logback.xml'
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+
+}
+
+repositories {
+    maven {url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+//    maven { url '// maven { url \'http://repo.hive2hive.org\' }' }
+    maven { url 'http://repo.hive2hive.org' }
+    maven { url 'http://nexus.neomind.com.br:8100/nexus/content/groups/neomind/' }
+    mavenLocal()
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    implementation 'net.tomp2p:tomp2p-android:5.0-Beta6'
+
+    implementation ('org.hive2hive:org.hive2hive.core:1.2.2') {
+        exclude group: 'org.bouncycastle'
+    }
+
+    implementation 'com.madgag.spongycastle:prov:1.51.0.0'
+    implementation 'com.github.tony19:logback-android-classic:1.1.1-3'
+
+    implementation 'com.google.android.gms:play-services:12.0.1'
+}
+
+idea {
+    module {
+        //if you love browsing Javadoc and sources
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
