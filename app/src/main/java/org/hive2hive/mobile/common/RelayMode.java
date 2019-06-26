@@ -4,9 +4,9 @@ package org.hive2hive.mobile.common;
  * Created by Nico Rutishauser
  */
 public enum RelayMode {
-	GCM(0),
+	FULL(0),
 	TCP(1),
-	FULL(2);
+	GCM(2);
 
 	private final int spinnerPosition;
 

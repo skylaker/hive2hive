@@ -10,8 +10,7 @@ import android.os.Environment;
 import android.os.Process;
 import android.provider.OpenableColumns;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -49,19 +48,19 @@ public class ApplicationHelper {
 	 * it doesn't, display a dialog that allows users to download the APK from
 	 * the Google Play Store or enable it in the device's system settings.
 	 */
-	public static boolean checkPlayServices(Activity activity) {
-		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);
-		if (resultCode != ConnectionResult.SUCCESS) {
-			if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-				GooglePlayServicesUtil.getErrorDialog(resultCode, activity,
-						PLAY_SERVICES_RESOLUTION_REQUEST).show();
-			} else {
-				LOG.info("This device is not supported.");
-			}
-			return false;
-		}
-		return true;
-	}
+//	public static boolean checkPlayServices(Activity activity) {
+//		int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(activity);
+//		if (resultCode != ConnectionResult.SUCCESS) {
+//			if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+//				GooglePlayServicesUtil.getErrorDialog(resultCode, activity,
+//						PLAY_SERVICES_RESOLUTION_REQUEST).show();
+//			} else {
+//				LOG.info("This device is not supported.");
+//			}
+//			return false;
+//		}
+//		return true;
+//	}
 
 	/* Checks if external storage is available for read and write */
 	public static boolean isExternalStorageWritable() {

@@ -39,7 +39,8 @@
         android:layout_height="wrap_content"
         android:checked="false"
         android:text="@string/bootstrap_expert_check"
-        android:textAppearance="?android:attr/textAppearanceSmall"/>
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/bootstrap_expert_view"
@@ -108,6 +109,6 @@
         android:text="@string/action_goto_login"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textSize="12dp"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
 
 </LinearLayout>

@@ -4,8 +4,6 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-
 import net.tomp2p.relay.buffer.BufferRequestListener;
 
 import org.hive2hive.mobile.H2HApplication;
@@ -26,25 +24,25 @@ public class GCMIntentService extends IntentService {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
-		// the message type is in the intent
-		String messageType = gcm.getMessageType(intent);
-
-		Bundle extras = intent.getExtras();
-		if (extras.isEmpty()) {
-			LOG.warn("Received empty GCM message of type {}", messageType);
-			return;
-		}
-
-		LOG.debug("Received message of type {} with extras {}", messageType, extras.toString());
-
-		H2HApplication application = (H2HApplication) getApplicationContext();
-		BufferRequestListener handler = application.bufferListener();
-		if (handler == null) {
-			LOG.warn("Ignoring message because peer is not connected yet / anymore");
-		} else {
-			LOG.debug("Passing GCM message to handler");
-			handler.sendBufferRequest(extras.getString("collapse_key"));
-		}
+//		GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
+//		// the message type is in the intent
+//		String messageType = gcm.getMessageType(intent);
+//
+//		Bundle extras = intent.getExtras();
+//		if (extras.isEmpty()) {
+//			LOG.warn("Received empty GCM message of type {}", messageType);
+//			return;
+//		}
+//
+//		LOG.debug("Received message of type {} with extras {}", messageType, extras.toString());
+//
+//		H2HApplication application = (H2HApplication) getApplicationContext();
+//		BufferRequestListener handler = application.bufferListener();
+//		if (handler == null) {
+//			LOG.warn("Ignoring message because peer is not connected yet / anymore");
+//		} else {
+//			LOG.debug("Passing GCM message to handler");
+//			handler.sendBufferRequest(extras.getString("collapse_key"));
+//		}
 	}
 }

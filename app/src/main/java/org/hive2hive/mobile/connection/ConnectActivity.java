@@ -1,13 +1,21 @@
 package org.hive2hive.mobile.connection;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,8 +46,18 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.AppSettingsDialog;
+import pub.devrel.easypermissions.EasyPermissions;
 
-public class ConnectActivity extends Activity {
+
+public class ConnectActivity extends Activity{
+
+	public static final int REQUEST_EXTERNAL_STORAGE = 1;
+	private static final String[] PERMISSIONS_STORAGE = {
+			Manifest.permission.READ_EXTERNAL_STORAGE,
+			Manifest.permission.WRITE_EXTERNAL_STORAGE,
+	};
 
 	private static final Logger LOG = LoggerFactory.getLogger(ConnectActivity.class);
 
@@ -56,6 +74,8 @@ public class ConnectActivity extends Activity {
 	private ViewGroup expertView;
 	private H2HApplication application;
 	private SharedPreferences prefs;
+
+	private String ipaddress="";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -83,17 +103,18 @@ public class ConnectActivity extends Activity {
 		expertCheckbox.setChecked(prefs.getBoolean(EXPERT_VIEW_SHOW, false));
 
 		application = (H2HApplication) getApplicationContext();
+		getIp();
 		if (!isConnected()) {
 			/** Since this is the first activity, some checks need to be made here */
-			if (ApplicationHelper.checkPlayServices(this)) {
-				LOG.debug("Play services are ok. Can use GCM service.");
-			} else {
-				LOG.error("Cannot use GCM service. Stopping application now.");
-				ApplicationHelper.killApplication();
-			}
+//			if (ApplicationHelper.checkPlayServices(this)) {
+//				LOG.debug("Play services are ok. Can use GCM service.");
+//			} else {
+//				LOG.error("Cannot use GCM service. Stopping application now.");
+//				ApplicationHelper.killApplication();
+//			}
 
 			// set default values
-			addressField.setText(prefs.getString(BOOTSTRAP_ADDRESS, BuildConfig.DEFAULT_BOOTSTRAP_ADDRESS));
+			addressField.setText(prefs.getString(BOOTSTRAP_ADDRESS, ipaddress.isEmpty() ? BuildConfig.DEFAULT_BOOTSTRAP_ADDRESS:ipaddress));
 			portField.setText(prefs.getString(BOOTSTRAP_PORT, String.valueOf(BuildConfig.DEFAULT_BOOTSTRAP_PORT)));
 			connectBtn.setText(R.string.bootstrap_button_connect);
 
@@ -108,6 +129,41 @@ public class ConnectActivity extends Activity {
 		}
 
 		enableBootstrapFields(isConnected());
+
+		requestPermissions();
+	}
+
+	private void getIp() {
+		//获取wifi服务
+		WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		//判断wifi是否开启
+		if (!wifiManager.isWifiEnabled()) {
+			wifiManager.setWifiEnabled(true);
+		}
+		WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+		int ipAddress = wifiInfo.getIpAddress();
+		ipaddress = intToIp(ipAddress);
+	}
+
+	private String intToIp(int i) {
+
+		return (i & 0xFF ) + "." +
+				((i >> 8 ) & 0xFF) + "." +
+				((i >> 16 ) & 0xFF) + "." +
+				( i >> 24 & 0xFF) ;
+	}
+
+	public void requestPermissions() {
+		if (Build.VERSION.SDK_INT >= 23) {
+			int permission = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+			if (permission != PackageManager.PERMISSION_GRANTED ) {
+				ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
+			} else {
+
+			}
+		} else {
+
+		}
 	}
 
 	private boolean isConnected() {
@@ -128,11 +184,12 @@ public class ConnectActivity extends Activity {
 		ConnectionMode mode = ApplicationHelper.getConnectionMode(this);
 		int preferredPosition = 0;
 		if (mode == ConnectionMode.WIFI) {
-			spinnerArray.add(getString(R.string.relay_mode_gcm));
-			spinnerArray.add(getString(R.string.relay_mode_tcp) + " " + getString(R.string.relay_mode_recommended));
+//			spinnerArray.add(getString(R.string.relay_mode_gcm));
+//			spinnerArray.add(getString(R.string.relay_mode_tcp) + " " + getString(R.string.relay_mode_recommended));
 			spinnerArray.add(getString(R.string.relay_mode_full));
-			preferredPosition = RelayMode.TCP.spinnerPosition();
-		} else {
+//			preferredPosition = RelayMode.TCP.spinnerPosition();
+		}
+		else {
 			spinnerArray.add(getString(R.string.relay_mode_gcm) + " " + getString(R.string.relay_mode_recommended));
 			spinnerArray.add(getString(R.string.relay_mode_tcp));
 			preferredPosition = RelayMode.GCM.spinnerPosition();
@@ -303,4 +360,5 @@ public class ConnectActivity extends Activity {
 			enableBootstrapFields(true);
 		}
 	}
+
 }

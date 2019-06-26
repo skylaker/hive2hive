@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
-import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import org.hive2hive.mobile.connection.ConnectActivity;
 import org.slf4j.Logger;
@@ -37,7 +36,7 @@ public class GCMRegistrationUtil {
 		int currentAppVersion = getAppVersion(context);
 		String registrationID = getStoredRegistrationId(context, currentAppVersion, gcmSenderId);
 		if (registrationID == null || registrationID.isEmpty()) {
-			registrationID = obtainRegistrationId(context, gcmSenderId);
+//			registrationID = obtainRegistrationId(context, gcmSenderId);
 			LOG.debug("Successfully obtained a new registration ID {} for version {} and sender id {}", registrationID, currentAppVersion, gcmSenderId);
 			storeRegistrationId(context, registrationID, currentAppVersion, gcmSenderId);
 		} else {
@@ -89,14 +88,14 @@ public class GCMRegistrationUtil {
 		prefs.edit().putString(PROPERTY_REG_ID, registrationId).putInt(PROPERTY_APP_VERSION, currentAppVersion).putLong(PROPERTY_GCM_SENDER, gcmSenderId).commit();
 	}
 
-	private static String obtainRegistrationId(Context context, long gcmSenderId) {
-		GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
-
-		try {
-			return gcm.register(String.valueOf(gcmSenderId));
-		} catch (IOException e) {
-			LOG.error("Cannot obtain a registration ID for sender id {}", gcmSenderId, e);
-			return null;
-		}
-	}
+//	private static String obtainRegistrationId(Context context, long gcmSenderId) {
+//		GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
+//
+//		try {
+//			return gcm.register(String.valueOf(gcmSenderId));
+//		} catch (IOException e) {
+//			LOG.error("Cannot obtain a registration ID for sender id {}", gcmSenderId, e);
+//			return null;
+//		}
+//	}
 }

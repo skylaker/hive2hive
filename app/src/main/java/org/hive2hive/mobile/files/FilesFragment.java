@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.FileProvider;
 import android.view.ContextMenu;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -97,7 +99,18 @@ public class FilesFragment extends ListFragment {
 		MimeTypeMap mime = MimeTypeMap.getSingleton();
 		String ext = FilenameUtils.getExtension(file.getName());
 		String type = mime.getMimeTypeFromExtension(ext);
-		intent.setDataAndType(Uri.fromFile(file), type);
+
+		if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.N) {
+
+			Uri contentUri = FileProvider.getUriForFile(context,"org.hive2hive.mobile.fileProvider",file);
+
+			intent.setDataAndType(contentUri,type);
+
+		}else{
+
+			intent.setDataAndType(Uri.fromFile(file), type);
+		}
+
 
 		try {
 			startActivity(intent);
